@@ -47,7 +47,7 @@ RCT_EXPORT_METHOD(showImagePicker:(NSDictionary *)options callback:(RCTResponseS
         }
         NSString *cancelTitle = [self.options valueForKey:@"cancelButtonTitle"];
         NSString *takePhotoButtonTitle = [self.options valueForKey:@"takePhotoButtonTitle"];
-        NSString *chooseFromLibraryButtonTitle = [self.options valueForKey:@"chooseFromLibraryButtonTitle"];        
+        NSString *chooseFromLibraryButtonTitle = [self.options valueForKey:@"chooseFromLibraryButtonTitle"];
 
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:nil preferredStyle:UIAlertControllerStyleActionSheet];
         alertController.view.tintColor = [RCTConvert UIColor:options[@"tintColor"]];
@@ -460,7 +460,12 @@ RCT_EXPORT_METHOD(showImagePicker:(NSDictionary *)options callback:(RCTResponseS
 
                 if (videoURL) { // Protect against reported crash
                   NSError *error = nil;
-                  [fileManager moveItemAtURL:videoURL toURL:videoDestinationURL error:&error];
+                  if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 13.0) {
+                    // iOS 13 may not allow to move the file, copy it instead
+                    [fileManager copyItemAtURL:videoURL toURL:videoDestinationURL error:&error];
+                  } else {
+                    [fileManager moveItemAtURL:videoURL toURL:videoDestinationURL error:&error];
+                  }
                   if (error) {
                       self.callback(@[@{@"error": error.localizedFailureReason}]);
                       return;
