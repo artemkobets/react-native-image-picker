@@ -161,6 +161,9 @@ RCT_EXPORT_METHOD(showImagePicker:(NSDictionary *)options callback:(RCTResponseS
         else if ([[self.options objectForKey:@"videoQuality"] isEqualToString:@"low"]) {
             self.picker.videoQuality = UIImagePickerControllerQualityTypeLow;
         }
+        else if ([[self.options objectForKey:@"videoQuality"] isEqualToString:@"640x480"]) {
+            self.picker.videoQuality = UIImagePickerControllerQualityType640x480;
+        }
         else {
             self.picker.videoQuality = UIImagePickerControllerQualityTypeMedium;
         }
